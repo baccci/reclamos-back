@@ -1,19 +1,17 @@
 import { ITipoReclamoRepository } from './tipo-reclamo.repository.interface';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TipoReclamo } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import prisma from '../../lib/db';
 
 @Injectable()
 export class TipoReclamoRepository implements ITipoReclamoRepository {
-  constructor(private readonly prisma: PrismaService) {}
-
   async findAll(): Promise<TipoReclamo[]> {
-    const tipoReclamos = await this.prisma.tipoReclamo.findMany();
+    const tipoReclamos = await prisma.tipoReclamo.findMany();
     return tipoReclamos.filter((tipoReclamo) => !tipoReclamo.deletedAt);
   }
 
   async findById(id: string): Promise<TipoReclamo> {
-    const tipoReclamo = await this.prisma.tipoReclamo.findFirst({
+    const tipoReclamo = await prisma.tipoReclamo.findFirst({
       where: { id },
     });
 

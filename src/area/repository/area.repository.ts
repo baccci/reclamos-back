@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IAreaRepository } from './area.repository.interface';
-import { PrismaService } from '../../prisma/prisma.service';
+import prisma from '../../lib/db';
 import { CreateAreaDto } from '../dto/create-area.dto';
 import { UpdateAreaDto } from '../dto/update-area.dto';
 import { Area } from '@prisma/client';
@@ -8,10 +8,10 @@ import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class AreaRepository implements IAreaRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor() {}
 
   async create(data: CreateAreaDto): Promise<Area> {
-    return this.prisma.area.create({
+    return prisma.area.create({
       data: {
         nombre: data.nombre,
         descripcion: data.descripcion,
@@ -20,7 +20,7 @@ export class AreaRepository implements IAreaRepository {
   }
 
   async update(id: string, data: UpdateAreaDto): Promise<Area> {
-    const area = await this.prisma.area.findFirst({
+    const area = await prisma.area.findFirst({
       where: { id },
     });
 
@@ -28,7 +28,7 @@ export class AreaRepository implements IAreaRepository {
       throw new Error(`El área con id ${id} no existe`);
     }
 
-    return this.prisma.area.update({
+    return prisma.area.update({
       where: { id },
       data: {
         ...data,
@@ -37,12 +37,12 @@ export class AreaRepository implements IAreaRepository {
   }
 
   async findAll(): Promise<Area[]> {
-    const areas = await this.prisma.area.findMany();
+    const areas = await prisma.area.findMany();
     return areas.filter((area) => !area.deletedAt);
   }
 
   async findById(id: string): Promise<Area> {
-    const area = await this.prisma.area.findFirst({
+    const area = await prisma.area.findFirst({
       where: { id },
     });
 
@@ -53,7 +53,7 @@ export class AreaRepository implements IAreaRepository {
   }
 
   async softDelete(id: string): Promise<boolean> {
-    const area = await this.prisma.area.findFirst({
+    const area = await prisma.area.findFirst({
       where: { id },
     });
 
@@ -61,7 +61,7 @@ export class AreaRepository implements IAreaRepository {
       throw new Error(`El área con id ${id} no existe`);
     }
 
-    await this.prisma.area.update({
+    await prisma.area.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
