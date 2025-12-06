@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReclamoDto } from './dto/create-reclamo.dto';
 import { UpdateReclamoDto } from './dto/update-reclamo.dto';
+import { ReclamosRepository } from './repositories/reclamos.repository';
 
 @Injectable()
 export class ReclamoService {
+  constructor(private readonly repository: ReclamosRepository) {}
+
   create(createReclamoDto: CreateReclamoDto) {
     return 'This action adds a new reclamo';
   }
 
   findAll() {
-    return `This action returns all reclamo`;
+    return this.repository.findAll();
   }
 
   findOne(id: number) {

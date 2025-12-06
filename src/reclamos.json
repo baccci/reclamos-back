@@ -2,15 +2,12 @@
   {
     "id": "675f9d8254a1c946a1a7c001",
     "tipoReclamoId": "675f9d8254a1c946a1a7c100",
-    "TipoReclamo": {
-      "id": "675f9d8254a1c946a1a7c100",
-      "nombre": "Problema técnico",
-      "descripcion": "Inconvenientes con el funcionamiento del sistema"
-    },
-    "prioridad": "ALTO",
-    "criticidad": "MEDIO",
+    "TipoReclamo": "Problema técnico",
+    "prioridad": "ALTA",
+    "criticidad": "MEDIA",
     "archivo": null,
     "descripcion": "El sistema se cae cuando intento generar un reclamo.",
+    "estado": "PENDIENTE",
     "cambioEstado": [
       {
         "id": "675f9d8254a1c946a1a7c900",
@@ -28,15 +25,12 @@
   {
     "id": "675f9d8254a1c946a1a7c002",
     "tipoReclamoId": "675f9d8254a1c946a1a7c101",
-    "TipoReclamo": {
-      "id": "675f9d8254a1c946a1a7c101",
-      "nombre": "Facturación",
-      "descripcion": "Errores en cargos o montos"
-    },
-    "prioridad": "BAJO",
-    "criticidad": "BAJO",
+    "TipoReclamo": "Facturación",
+    "prioridad": "BAJA",
+    "criticidad": "BAJA",
     "archivo": null,
     "descripcion": "Me están cobrando dos veces el mismo servicio.",
+    "estado": "RESUELTO",
     "cambioEstado": [
       {
         "id": "675f9d8254a1c946a1a7c901",
