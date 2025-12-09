@@ -1,9 +1,8 @@
 import { Medidas } from 'src/common/enums/medidas.enum';
 
-export class CreateReclamoDto {
+export interface ReclamoCreateData {
   tipoReclamoId: string;
-  descripcion: string;
   prioridad: Medidas;
   criticidad: Medidas;
-  area: string;
+  descripcion: string;
 }

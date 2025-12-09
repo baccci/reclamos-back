@@ -27,17 +27,21 @@ model Cliente {
 }
 
 model Empleado {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  email       String @unique
-  contraseña  String
-  nombre      String
-  telefono    String
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  email         String @unique
+  contraseña    String
+  nombre        String
+  telefono      String
 
-  role        Role      @default(EMPLEADO)
+  role          Role      @default(EMPLEADO)
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime? 
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime? 
+
+  areaId        String? @db.ObjectId
+  area          Area? @relation(fields: [areaId], references: [id])
+  cambiosEstado CambioEstado[]
 }
 
 enum EstadoReclamo {
@@ -90,6 +94,8 @@ model Area {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   deletedAt      DateTime?
+
+  empleados      Empleado[]
 }
 
 model CambioEstado {
@@ -102,7 +108,8 @@ model CambioEstado {
   fechaFin       DateTime?
   descripcion    String?
   estado         EstadoReclamo 
-  //falta usuario 
+  empleadoId     String       @db.ObjectId
+  empleado       Empleado     @relation(fields: [empleadoId], references: [id])
 }
 
 
