@@ -1,5 +1,5 @@
 export enum Medidas {
-  ALTO = 'ALTO',
-  MEDIO = 'MEDIO',
-  BAJO = 'BAJO',
+  ALTO = 'ALTA',
+  MEDIO = 'MEDIA',
+  BAJO = 'BAJA',
 }

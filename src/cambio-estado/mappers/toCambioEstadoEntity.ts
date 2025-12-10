@@ -7,6 +7,7 @@ export function toCambioEstadoCreateData(
   return {
     userId: dto.userId,
     reclamoId: dto.reclamoId,
-    area: dto.area,
+    areaId: dto.area,
+    estado: dto.estado,
   };
 }

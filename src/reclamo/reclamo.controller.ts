@@ -9,6 +9,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 export class ReclamoController {
   constructor(private readonly reclamoService: ReclamoService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('CLIENTE')
   @Post()
   create(@Body() dto: CreateReclamoDto, @Req() req) {
     const userId = req.user.sub as string;

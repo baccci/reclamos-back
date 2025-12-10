@@ -3,7 +3,7 @@ import prisma from '../../lib/db';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ReclamoCreateData } from '../interfaces/reclamo-create.interface';
-import { Reclamo } from '@prisma/client';
+import { CambioEstado, Proyecto, Reclamo, TipoReclamo } from '@prisma/client';
 
 @Injectable()
 export class ReclamosRepository {
@@ -24,5 +24,23 @@ export class ReclamosRepository {
 
       throw new Error(`Error al crear el reclamo: ${String(error)}`);
     }
+  }
+
+  async findByIdCompleto(id: string): Promise<
+    Reclamo & {
+        cambioEstado: CambioEstado[];
+        TipoReclamo: TipoReclamo;
+        proyecto: Proyecto;
+    }
+    | null
+  > {
+    return prisma.reclamo.findUnique({
+      where: { id },
+      include: {
+        TipoReclamo: true,
+        proyecto: true,
+        cambioEstado: true,
+      },
+    });
   }
 }
