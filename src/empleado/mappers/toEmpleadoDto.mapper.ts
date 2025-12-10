@@ -7,7 +7,6 @@ export function toEmpleadoDto(empleado: Empleado): EmpleadoDto {
     email: empleado.email,
     telefono: empleado.telefono,
     nombre: empleado.nombre,
-    role: empleado.role,
   };
 
   return dto;

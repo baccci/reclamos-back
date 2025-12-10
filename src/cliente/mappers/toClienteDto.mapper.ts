@@ -7,7 +7,6 @@ export function toClienteDto(cliente: Cliente): ClienteDto {
     email: cliente.email,
     telefono: cliente.telefono,
     nombre: cliente.nombre,
-    role: cliente.role,
   };
   return dto;
 }

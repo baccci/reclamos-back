@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
 
 export class EmpleadoDto {
   @ApiProperty({
@@ -25,11 +24,4 @@ export class EmpleadoDto {
     description: 'Nombre del empleado',
   })
   nombre: string;
-
-  @ApiProperty({
-    example: Role.EMPLEADO,
-    enum: Role,
-    description: 'Rol asignado al empleado',
-  })
-  role: Role;
 }

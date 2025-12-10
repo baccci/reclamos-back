@@ -1,14 +1,13 @@
-/* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { IEmpleadoRepository } from "./empleado.repository.interface";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { IEmpleadoRepository } from './empleado.repository.interface';
 import prisma from '../../lib/db';
-import { Empleado } from "@prisma/client";
-import { UsuarioCreateData } from "src/common/interfaces/usuario-create.interface";
-import { EmpleadoUpdateData } from "../interfaces/empleado-update.interface";
+import { Empleado } from '@prisma/client';
+import { EmpleadoUpdateData } from '../interfaces/empleado-update.interface';
+import { EmpleadoCreateData } from '../interfaces/empleado-create.interface';
 
 @Injectable()
 export class EmpleadoRepository implements IEmpleadoRepository {
-  async create(data: UsuarioCreateData): Promise<Empleado> {
+  async create(data: EmpleadoCreateData): Promise<Empleado> {
     try {
       return await prisma.empleado.create({ data });
     } catch (error) {

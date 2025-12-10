@@ -3,12 +3,12 @@ import { RegisterDto } from 'src/auth/dto/register.dto';
 import { EmpleadoRepository } from './repositories/empleado.repository';
 import { toEmpleadoDto } from './mappers/toEmpleadoDto.mapper';
 import { EmpleadoDto } from './dto/empleado.dto';
-import { toUsuarioEntity } from 'src/common/mappers/toUsuarioEntity.mapper';
 import { UpdateEmpleadoDto } from './dto/update.empleado.dto';
 import { toEmpleadoUpdateData } from './mappers/toEmpleadoParcial.mapper';
 import { AuthDto } from 'src/common/dtos/auth.dto';
 import { AuthMapper } from 'src/common/mappers/toAuthDto.mapper';
-import { Roles } from 'src/common/enums/roles.enum';
+import { Role } from 'src/common/enums/role.enum';
+import { toEmpleadoEntity } from './mappers/toEmpleadoEntity.mapper';
 
 @Injectable()
 export class EmpleadoService {
@@ -16,7 +16,7 @@ export class EmpleadoService {
 
   async register(registerDto: RegisterDto): Promise<EmpleadoDto> {
     try {
-      const data = toUsuarioEntity(registerDto);
+      const data = toEmpleadoEntity(registerDto);
       const empleado = await this.empleadoRepository.create(data);
       return toEmpleadoDto(empleado);
     } catch (error: unknown) {
@@ -59,7 +59,7 @@ export class EmpleadoService {
   async findForAuth(email: string): Promise<AuthDto | null> {
     const empleado = await this.empleadoRepository.findByEmail(email);
     if (empleado) {
-      return AuthMapper.toAuthDto(empleado, Roles.EMPLEADO);
+      return AuthMapper.toAuthDto(empleado, Role.EMPLEADO);
     }
     return null;
   }
