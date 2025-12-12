@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { AreaDto } from '../../area/dtos/area.dto';
 
 export class EmpleadoDto {
   @ApiProperty({
@@ -24,4 +25,10 @@ export class EmpleadoDto {
     description: 'Nombre del empleado',
   })
   nombre: string;
+
+  @ApiProperty({
+    example: 'Facturación',
+    description: 'Área asignada al empleado',
+  })
+  area: AreaDto | null;
 }

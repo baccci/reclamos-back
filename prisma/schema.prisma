@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Estados {
+  PENDIENTE
+  EN_PROCESO
+  RESUELTO
+}
+
 model Cliente {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   email       String     @unique
@@ -15,6 +21,7 @@ model Cliente {
   telefono    String
   role        String
   proyectos   Proyecto[] @relation("ProyectoACliente")
+  cambiosEstado CambioEstado[] @relation("ClienteACambioEstado")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -22,40 +29,19 @@ model Cliente {
 }
 
 model Empleado {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  email       String @unique
-  contraseña String
-  nombre      String
-  telefono    String
-  role        String
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  email         String         @unique
+  contraseña   String
+  nombre        String
+  telefono      String
+  role          String
+  areaId        String?        @db.ObjectId
+  area          Area?          @relation("EmpleadosEnArea", fields: [areaId], references: [id])
+  cambiosEstado CambioEstado[] @relation("EmpleadoACambioEstado")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-}
-
-model Reclamo {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  tipoReclamoId String         @db.ObjectId
-  TipoReclamo   TipoReclamo    @relation(fields: [tipoReclamoId], references: [id])
-  prioridad     String
-  criticidad    String
-  archivo       String?
-  descripcion   String
-  cambioEstado  CambioEstado[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  deletedAt     DateTime?
-}
-
-model TipoReclamo {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  nombre      String
-  descripcion String?
-  reclamos    Reclamo[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
 }
 
 model Area {
@@ -63,21 +49,10 @@ model Area {
   nombre       String
   descripcion  String?
   cambioEstado CambioEstado[]
+  empleados    Empleado[]     @relation("EmpleadosEnArea")
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   deletedAt    DateTime?
-}
-
-model CambioEstado {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  reclamoId   String    @db.ObjectId
-  reclamo     Reclamo   @relation(fields: [reclamoId], references: [id])
-  areaId      String    @db.ObjectId
-  area        Area      @relation(fields: [areaId], references: [id])
-  fechaInicio DateTime  @default(now())
-  fechaFin    DateTime?
-  descripcion String?
-  estado      String
 }
 
 model Proyecto {
@@ -87,6 +62,7 @@ model Proyecto {
 
   nombre      String
   descripcion String?
+  reclamos    Reclamo[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -103,4 +79,53 @@ model TipoProyecto {
   updatedAt   DateTime   @updatedAt
   deletedAt   DateTime?
   proyectos   Proyecto[] @relation("ProyectoATipoProyecto")
+}
+
+model Reclamo {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  tipoReclamoId String         @db.ObjectId
+  proyectoId    String         @db.ObjectId
+
+  estado        Estados
+  prioridad     String
+  criticidad    String
+  archivo       String?
+  descripcion   String
+  cambioEstado  CambioEstado[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+
+  tipoReclamo   TipoReclamo    @relation(fields: [tipoReclamoId], references: [id])
+  proyecto      Proyecto       @relation(fields: [proyectoId], references: [id])
+}
+
+model TipoReclamo {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  nombre      String
+  descripcion String?
+  reclamos    Reclamo[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+}
+
+model CambioEstado {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  reclamoId   String    @db.ObjectId
+  empleadoId  String?   @db.ObjectId
+  clienteId   String?   @db.ObjectId
+
+  reclamo     Reclamo   @relation(fields: [reclamoId], references: [id])
+  areaId      String    @db.ObjectId
+  area        Area      @relation(fields: [areaId], references: [id])
+  fechaInicio DateTime  @default(now())
+  fechaFin    DateTime?
+  descripcion String?
+  estado      Estados
+
+  
+  empleado    Empleado? @relation("EmpleadoACambioEstado", fields: [empleadoId], references: [id])
+  cliente     Cliente?  @relation("ClienteACambioEstado", fields: [clienteId], references: [id])
 }

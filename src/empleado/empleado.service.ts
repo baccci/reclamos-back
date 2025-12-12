@@ -7,12 +7,17 @@ import { UpdateEmpleadoDto } from './dtos/update.empleado.dto';
 import { toEmpleadoUpdateData } from './mappers/toEmpleadoParcial.mapper';
 import { AuthDto } from 'src/common/dtos/auth.dto';
 import { AuthMapper } from 'src/common/mappers/toAuthDto.mapper';
+import { AsignarAreaDto } from './dtos/asignar.area.dto';
+import { AreaService } from 'src/area/area.service';
 import { Role } from 'src/common/enums/role.enum';
 import { toEmpleadoEntity } from './mappers/toEmpleadoEntity.mapper';
 
 @Injectable()
 export class EmpleadoService {
-  constructor(private readonly empleadoRepository: EmpleadoRepository) {}
+  constructor(
+    private readonly empleadoRepository: EmpleadoRepository,
+    private readonly areaService: AreaService,
+  ) {}
 
   async register(registerDto: RegisterDto): Promise<EmpleadoDto> {
     try {
@@ -62,5 +67,18 @@ export class EmpleadoService {
       return AuthMapper.toAuthDto(empleado, Role.EMPLEADO);
     }
     return null;
+  }
+
+  async asignarArea(email: string, dto: AsignarAreaDto): Promise<EmpleadoDto> {
+    const areaDto = await this.areaService.findByName(dto.area);
+    if (!areaDto) {
+      throw new BadRequestException('El area no existe.');
+    }
+
+    const empleado = await this.empleadoRepository.asignarArea(
+      email,
+      areaDto.id,
+    );
+    return toEmpleadoDto(empleado);
   }
 }

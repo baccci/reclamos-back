@@ -1,4 +1,23 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateReclamoDto } from './create-reclamo.dto';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { Medidas } from '../../common/enums/medidas.enum';
 
-export class UpdateReclamoDto extends PartialType(CreateReclamoDto) {}
+export class UpdateReclamoDto {
+  @IsString()
+  @IsOptional()
+  tipoReclamoId?: string;
+
+  @IsString()
+  @IsOptional()
+  descripcion?: string;
+
+  @IsEnum(Medidas)
+  @IsOptional()
+  prioridad?: Medidas;
+
+  @IsEnum(Medidas)
+  @IsOptional()
+  criticidad?: Medidas;
+
+  @IsString()
+  area: string;
+}

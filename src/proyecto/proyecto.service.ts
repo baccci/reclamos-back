@@ -15,7 +15,7 @@ export class ProyectoService {
   ) {}
 
   async create(dto: CreateProyectoDto, user: string) {
-    await this.validator.validate(dto.tipoProyectoId);
+    await this.validator.validateTipoProyecto(dto.tipoProyectoId);
 
     const proyectoInterfaz = aProyectoInterfaz(dto, user) as ProyectoInterfaz;
     const proyecto = await this.repository.create(proyectoInterfaz);
@@ -52,7 +52,7 @@ export class ProyectoService {
 
   async update(id: string, dto: UpdateProyectoDto, user: string) {
     if (dto.tipoProyectoId) {
-      await this.validator.validate(dto.tipoProyectoId);
+      await this.validator.validateTipoProyecto(dto.tipoProyectoId);
     }
 
     const proyectoInterfaz = aProyectoInterfaz(dto, user);
