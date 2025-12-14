@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TipoReclamoService } from './tipo-reclamo.service';
-import { TipoReclamoMapper } from './mappers/tipo-reclamo.mapper';
+import { toTipoReclamoDto } from './mappers/tipo-reclamo.mapper';
 
 const mockTipoReclamoEntity: {
   id: string;
@@ -68,9 +68,7 @@ describe('TipoReclamoService', () => {
 
       expect(mockTipoReclamoRepository.findAll).toHaveBeenCalled();
       expect(result).toHaveLength(2);
-      expect(result[0]).toEqual(
-        TipoReclamoMapper.toTipoReclamoDto(mockTipoReclamoEntity),
-      );
+      expect(result[0]).toEqual(toTipoReclamoDto(mockTipoReclamoEntity));
       expect(result[1]).toEqual({
         id: 'tr-002',
         nombre: 'Error en facturación',
@@ -96,9 +94,7 @@ describe('TipoReclamoService', () => {
       const result = await service.findOne('tr-001');
 
       expect(mockTipoReclamoRepository.findById).toHaveBeenCalledWith('tr-001');
-      expect(result).toEqual(
-        TipoReclamoMapper.toTipoReclamoDto(mockTipoReclamoEntity),
-      );
+      expect(result).toEqual(toTipoReclamoDto(mockTipoReclamoEntity));
     });
 
     it('debe devolver el DTO mapeado incluso si descripcion es null', async () => {

@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmpleadoController } from './empleado.controller';
 import { EmpleadoService } from './empleado.service';
-import { UpdateEmpleadoDto } from './dto/update.empleado.dto';
+import { UpdateEmpleadoDto } from './dtos/update.empleado.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BadRequestException } from '@nestjs/common';
+import { AuthenticatedRequest } from 'src/common/types/authenticated-request';
 
 type MockAuthenticatedRequest = {
   user: {
@@ -78,7 +79,7 @@ describe('EmpleadoController', () => {
 
       const result = await controller.updateProfile(
         updateDto,
-        mockRequest as any,
+        mockRequest as AuthenticatedRequest,
       );
 
       // Verifica que llama al service con el ID del usuario autenticado
@@ -105,11 +106,17 @@ describe('EmpleadoController', () => {
       );
 
       await expect(
-        controller.updateProfile(updateDto, mockRequest as any),
+        controller.updateProfile(
+          updateDto,
+          mockRequest as AuthenticatedRequest,
+        ),
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        controller.updateProfile(updateDto, mockRequest as any),
+        controller.updateProfile(
+          updateDto,
+          mockRequest as AuthenticatedRequest,
+        ),
       ).rejects.toThrow('El email ya está en uso.');
     });
 
@@ -125,7 +132,10 @@ describe('EmpleadoController', () => {
       );
 
       await expect(
-        controller.updateProfile(updateDto, mockRequest as any),
+        controller.updateProfile(
+          updateDto,
+          mockRequest as AuthenticatedRequest,
+        ),
       ).rejects.toThrow('Error inesperado en la base de datos');
     });
   });

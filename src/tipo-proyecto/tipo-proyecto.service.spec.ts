@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TipoProyectoService } from './tipo-proyecto.service';
 import { NotFoundException } from '@nestjs/common';
-import { aTipoProyectoDto } from './mapper/tipo-proyecto.mapper';
+import { aTipoProyectoDto } from './mappers/tipo-proyecto.mapper';
 
 const mockTipoProyectoEntity = {
   id: 'tipo-1',

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AreaService } from './area.service';
-import { CreateAreaDto } from './dto/create-area.dto';
-import { UpdateAreaDto } from './dto/update-area.dto';
+import { CreateAreaDto } from './dtos/create-area.dto';
+import { UpdateAreaDto } from './dtos/update-area.dto';
 
 interface Area {
   id: string;
@@ -109,7 +109,7 @@ describe('AreaService', () => {
 
       mockAreaRepository.findById.mockResolvedValue(areaEntity);
 
-      const result = await service.findById('1');
+      const result = await service.findOne('1');
 
       expect(mockAreaRepository.findById.mock.calls[0][0]).toBe('1');
       expect(result).toEqual({
@@ -122,7 +122,7 @@ describe('AreaService', () => {
     it('debe devolver null si el área no existe', async () => {
       mockAreaRepository.findById.mockResolvedValue(null);
 
-      const result = await service.findById('999');
+      const result = await service.findOne('999');
 
       expect(result).toBeNull();
     });
