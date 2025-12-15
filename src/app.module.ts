@@ -10,7 +10,7 @@ import { TipoProyectoModule } from './tipo-proyecto/tipo-proyecto.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CambioEstadoModule } from './auth/cambio-estado/cambio-estado.module';
+import { CambioEstadoModule } from './cambio-estado/cambio-estado.module';
 
 @Module({
   imports: [
@@ -28,4 +28,4 @@ import { CambioEstadoModule } from './auth/cambio-estado/cambio-estado.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
