@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateReclamoDto } from './dtos/create-reclamo.dto';
 import type { IReclamoRepository } from './repositories/reclamo.repository.interface';
 import { ReclamoDto } from './dtos/reclamo.dto';
@@ -16,6 +16,7 @@ import {
   toCambioEstadoData,
 } from '../cambio-estado/mappers/toCambioEstadoEntity';
 import { UpdateReclamoDto } from './dtos/update-reclamo.dto';
+import { EmpleadoService } from 'src/empleado/empleado.service';
 
 @Injectable()
 export class ReclamoService {
@@ -24,6 +25,7 @@ export class ReclamoService {
     private readonly repository: IReclamoRepository,
     private readonly validator: ReclamoValidator,
     private readonly helper: ReclamoHelper,
+    private readonly empleadoService: EmpleadoService,
   ) {}
 
   async create(dto: CreateReclamoDto, userId: string): Promise<ReclamoDto> {
@@ -95,5 +97,29 @@ export class ReclamoService {
     );
 
     return await this.repository.reassignArea(dataCambioEstado);
+  }
+
+  async findByArea(userId: string): Promise<ReclamoDto[]> {
+    // buscamos areaId del empleado
+    const areaId = await this.empleadoService.findArea(userId);
+    if (!areaId) {
+      throw new BadRequestException('El empleado no tiene un area asignada.');
+    }
+
+    // traemos todos los reclamos
+    const reclamos = await this.repository.findAll();
+
+    // filtramos por último cambio de estado
+    const reclamosFiltrados: ReclamoDto[] = [];
+
+    for (const reclamo of reclamos) {
+      const ultimoCambio = await this.helper.findLastCambioEstado(reclamo.id);
+
+      if (ultimoCambio?.areaId === areaId) {
+        reclamosFiltrados.push(toReclamoDto(reclamo));
+      }
+    }
+
+    return reclamosFiltrados;
   }
 }
