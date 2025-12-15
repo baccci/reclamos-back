@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Param } from '@nestjs/common';
 import { CambioEstadoService } from './cambio-estado.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @Controller('cambio-estado')
 export class CambioEstadoController {
   constructor(private readonly cambioEstadoService: CambioEstadoService) {}

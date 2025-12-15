@@ -10,9 +10,10 @@ import {
 import { AreaService } from './area.service';
 import { CreateAreaDto } from './dtos/create-area.dto';
 import { UpdateAreaDto } from './dtos/update-area.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { AreaDto } from './dtos/area.dto';
 
+@ApiBearerAuth('access-token')
 @Controller('area')
 export class AreaController {
   constructor(private readonly service: AreaService) {}

@@ -23,7 +23,7 @@ export class ReclamoValidator {
   }
 
   async validateProyecto(id: string): Promise<boolean> {
-    const proyecto = await this.proyectoService.findOne(id);
+    const proyecto = await this.proyectoService.findOneEmpleado(id);
     if (!proyecto) throw new Error(`El proyecto con id ${id} no existe`);
     return true;
   }

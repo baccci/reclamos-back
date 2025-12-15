@@ -5,7 +5,9 @@ import {
   SwaggerFindOneTipoProyecto,
 } from './swaggers/tipo-proyecto.swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('tipo-proyecto')
 export class TipoProyectoController {
