@@ -9,4 +9,8 @@ export interface IProyectoRepository {
   create(createProyectoDto: CreateProyectoDto): Promise<Proyecto>;
   update(id: string, updateProyectoDto: UpdateProyectoDto): Promise<Proyecto>;
   remove(id: string): Promise<boolean>;
+  findByIdAndCliente(
+    proyectoId: string,
+    clienteId: string,
+  ): Promise<Proyecto | null>;
 }

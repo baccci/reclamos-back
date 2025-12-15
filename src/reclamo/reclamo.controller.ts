@@ -17,7 +17,9 @@ import { Role } from 'src/common/enums/role.enum';
 import { UpdateEstadoDto } from './dtos/update-estado.dto';
 import { ReasignarAreaDto } from './dtos/reasignar-area.dto';
 import { UpdateReclamoDto } from './dtos/update-reclamo.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('reclamo')
 export class ReclamoController {

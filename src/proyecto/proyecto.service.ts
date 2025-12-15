@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProyectoDto } from './dtos/create-proyecto.dto';
 import { UpdateProyectoDto } from './dtos/update-proyecto.dto';
 import type { IProyectoRepository } from './repositories/proyecto.repository.interface';
@@ -27,11 +32,23 @@ export class ProyectoService {
     return proyectos.map(aProyectoDto);
   }
 
-  async findOne(id: string) {
+  async findOneEmpleado(id: string) {
     const proyecto = await this.repository.findOne(id);
 
     if (!proyecto) {
       throw new NotFoundException('Proyecto no encontrado');
+    }
+
+    return aProyectoDto(proyecto);
+  }
+
+  async findOneByCliente(id: string, clienteId: string) {
+    const proyecto = await this.repository.findByIdAndCliente(id, clienteId);
+
+    if (!proyecto) {
+      throw new BadRequestException(
+        'Proyecto inexistente o no pertenece al cliente',
+      );
     }
 
     return aProyectoDto(proyecto);

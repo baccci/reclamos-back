@@ -62,4 +62,23 @@ export class ProyectoRepository implements IProyectoRepository {
 
     return true;
   }
+
+  async findByIdAndCliente(
+    proyectoId: string,
+    clienteId: string,
+  ): Promise<Proyecto | null> {
+    const proyecto = await prisma.proyecto.findFirst({
+      where: {
+        id: proyectoId,
+        clienteId: clienteId,
+        deletedAt: undefined,
+      },
+    });
+
+    if (!proyecto) {
+      return null;
+    }
+
+    return proyecto;
+  }
 }

@@ -2,13 +2,14 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
 import { LoginDto } from './dtos/login.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   SwaggerLogin,
   SwaggerRegisterCliente,
   SwaggerRegisterEmpleado,
 } from './swaggers/auth.swagger';
 
+@ApiBearerAuth('access-token')
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
