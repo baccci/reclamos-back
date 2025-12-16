@@ -56,7 +56,9 @@ export class ReclamoService {
     const cambioEstado = await this.helper.findLastCambioEstado(id);
 
     const data = toReclamoUpdateData(id, dto, userId, reclamo, cambioEstado);
-    return await this.repository.update(data);
+    const updated = await this.repository.update(data);
+
+    return toReclamoDto(updated);
   }
 
   async updateEstado(id: string, dto: UpdateEstadoDto, userId: string) {
@@ -82,7 +84,9 @@ export class ReclamoService {
       userId,
     );
 
-    return await this.repository.updateEstado(dataCambioEstado);
+    const updated = await this.repository.updateEstado(dataCambioEstado);
+
+    return toReclamoDto(updated);
   }
 
   async reassignArea(id: string, dto: ReasignarAreaDto, userId: string) {
@@ -106,7 +110,9 @@ export class ReclamoService {
       userId,
     );
 
-    return await this.repository.reassignArea(dataCambioEstado);
+    const updated = await this.repository.reassignArea(dataCambioEstado);
+
+    return toReclamoDto(updated);
   }
 
   async findByArea(userId: string): Promise<ReclamoDto[]> {

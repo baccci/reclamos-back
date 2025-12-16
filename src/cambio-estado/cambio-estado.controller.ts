@@ -4,7 +4,9 @@ import {
   SwaggerFindCambioEstadoByEstado,
   SwaggerFindCambioEstadoByReclamo,
 } from './swaggers/cambio-estado.swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @Controller('cambio-estado')
 export class CambioEstadoController {
   constructor(private readonly cambioEstadoService: CambioEstadoService) {}

@@ -24,7 +24,9 @@ import { Role } from '../common/enums/role.enum';
 import { Roles } from '../common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('proyecto')
 export class ProyectoController {
@@ -46,10 +48,18 @@ export class ProyectoController {
   }
 
   @SwaggerFindOneProyecto()
-  @Roles(Role.EMPLEADO, Role.CLIENTE)
+  @Roles(Role.EMPLEADO)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
+  findOneEmpleado(@Param('id') id: string) {
+    return this.service.findOneEmpleado(id);
+  }
+
+  @SwaggerFindOneProyecto()
+  @Roles(Role.CLIENTE)
+  @Get(':id/cliente')
+  findOneCliente(@Req() req, @Param('id') id: string) {
+    const user = req.user.id as string;
+    return this.service.findOneByCliente(id, user);
   }
 
   @SwaggerFindByTipoProyecto()
@@ -68,14 +78,15 @@ export class ProyectoController {
     @Body() updateProyectoDto: UpdateProyectoDto,
     @Req() req,
   ) {
-    const user = req.user.id as string;
-    return this.service.update(id, updateProyectoDto, user);
+    const userId = req.user.id as string;
+    return this.service.update(id, updateProyectoDto, userId);
   }
 
   @SwaggerDeleteProyecto()
   @Roles(Role.CLIENTE)
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.service.remove(id);
+  delete(@Req() req, @Param('id') id: string) {
+    const userId = req.user.id as string;
+    return this.service.remove(id, userId);
   }
 }

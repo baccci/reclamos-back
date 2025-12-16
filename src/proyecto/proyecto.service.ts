@@ -1,4 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProyectoDto } from './dtos/create-proyecto.dto';
 import { UpdateProyectoDto } from './dtos/update-proyecto.dto';
 import type { IProyectoRepository } from './repositories/proyecto.repository.interface';
@@ -27,11 +33,23 @@ export class ProyectoService {
     return proyectos.map(aProyectoDto);
   }
 
-  async findOne(id: string) {
+  async findOneEmpleado(id: string) {
     const proyecto = await this.repository.findOne(id);
 
     if (!proyecto) {
       throw new NotFoundException('Proyecto no encontrado');
+    }
+
+    return aProyectoDto(proyecto);
+  }
+
+  async findOneByCliente(id: string, clienteId: string) {
+    const proyecto = await this.repository.findByIdAndCliente(id, clienteId);
+
+    if (!proyecto) {
+      throw new BadRequestException(
+        'Proyecto inexistente o no pertenece al cliente',
+      );
     }
 
     return aProyectoDto(proyecto);
@@ -50,17 +68,39 @@ export class ProyectoService {
     return proyectos.map(aProyectoDto);
   }
 
-  async update(id: string, dto: UpdateProyectoDto, user: string) {
+  async update(id: string, dto: UpdateProyectoDto, userId: string) {
+    const proyectoExistente = await this.repository.findByIdAndCliente(
+      id,
+      userId,
+    );
+
+    if (!proyectoExistente) {
+      throw new ForbiddenException(
+        'No tenés permiso para modificar este proyecto',
+      );
+    }
+
     if (dto.tipoProyectoId) {
       await this.validator.validateTipoProyecto(dto.tipoProyectoId);
     }
 
-    const proyectoInterfaz = aProyectoInterfaz(dto, user);
+    const proyectoInterfaz = aProyectoInterfaz(dto, userId);
     const proyecto = await this.repository.update(id, proyectoInterfaz);
     return aProyectoDto(proyecto);
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
+    const proyectoExistente = await this.repository.findByIdAndCliente(
+      id,
+      userId,
+    );
+
+    if (!proyectoExistente) {
+      throw new ForbiddenException(
+        'No tenés permiso para modificar este proyecto',
+      );
+    }
+
     return await this.repository.remove(id);
   }
 }

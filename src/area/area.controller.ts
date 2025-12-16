@@ -17,7 +17,9 @@ import {
   SwaggerFindOneArea,
   SwaggerUpdateArea,
 } from './swaggers/area.swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @Controller('area')
 export class AreaController {
   constructor(private readonly service: AreaService) {}

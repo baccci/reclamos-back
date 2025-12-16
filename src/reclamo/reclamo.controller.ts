@@ -30,7 +30,9 @@ import {
   SwaggerUpdateEstadoReclamo,
   SwaggerUpdateReclamo,
 } from './swaggers/reclamo.swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('reclamo')
 export class ReclamoController {
