@@ -139,12 +139,14 @@ export class ReclamoService {
   }
 
   async getTiempoPromedioResolucion(areaId: string): Promise<number> {
+    await this.validator.validateArea(areaId);
     const rangos = await this.repository.findDatesResueltos(areaId);
     const tiempoPromedio = this.helper.calcularTiempoResolucion(rangos);
     return tiempoPromedio;
   }
 
   async getCantidadPromedioResolucion(areaId: string): Promise<number> {
+    await this.validator.validateArea(areaId);
     const total = await this.repository.countTotalByArea(areaId);
     const resueltos = await this.repository.countResueltosByArea(areaId);
 

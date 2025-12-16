@@ -87,13 +87,13 @@ export class ReclamoController {
 
   @Roles(Role.EMPLEADO)
   @Get('tiempo-promedio-resolucion')
-  getTiempoPromedioResolucion(@Query() areaId: string) {
+  getTiempoPromedioResolucion(@Query('areaId') areaId: string) {
     return this.service.getTiempoPromedioResolucion(areaId);
   }
 
   @Roles(Role.EMPLEADO)
   @Get('cantidad-promedio-resolucion')
-  getCantidadPromedioResolucion(@Query() areaId: string) {
+  getCantidadPromedioResolucion(@Query('areaId') areaId: string) {
     return this.service.getCantidadPromedioResolucion(areaId);
   }
 }
