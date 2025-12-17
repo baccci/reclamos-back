@@ -22,4 +22,5 @@ export interface FiltrosReclamoData {
   clienteId?: string;
   fechaDesde?: Date;
   fechaHasta?: Date;
+  areaId?: string;
 }

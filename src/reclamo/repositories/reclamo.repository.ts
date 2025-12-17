@@ -228,6 +228,15 @@ export class ReclamoRepository implements IReclamoRepository {
       }
     }
 
+    if (filtros.areaId) {
+      where.cambioEstado = {
+        some: {
+          areaId: filtros.areaId,
+          OR: [{ fechaFin: null }, { fechaFin: { not: { isSet: true } } }],
+        },
+      };
+    }
+
     return await prisma.reclamo.count({
       where: {
         ...where,

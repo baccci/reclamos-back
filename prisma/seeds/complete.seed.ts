@@ -414,17 +414,25 @@ async function main() {
     fechaFin?: Date | null;
   }> = [];
 
-  // Para cada reclamo, crear algunos cambios de estado
   for (let i = 0; i < reclamosCreados.length; i++) {
     const reclamo = reclamosCreados[i];
     const cliente = clientesCreados[i % clientesCreados.length];
     const empleado = empleadosCreados[i % empleadosCreados.length];
-    // Obtener el área del empleado o usar la primera área por defecto
+
     const area = empleado.areaId
       ? areasCreadas.find((a) => a.id === empleado.areaId) || areasCreadas[0]
       : areasCreadas[0];
 
-    // Cambio inicial (creado por cliente)
+    const baseDate =
+      Date.now() - (reclamosCreados.length - i) * 24 * 60 * 60 * 1000;
+
+    // 🟡 PENDIENTE (siempre existe y SIEMPRE se cierra si hay otro estado)
+    const pendienteInicio = new Date(baseDate);
+    const pendienteFin =
+      reclamo.estado === Estados.PENDIENTE
+        ? null
+        : new Date(pendienteInicio.getTime() + 4 * 60 * 60 * 1000);
+
     cambiosEstadoData.push({
       reclamoId: reclamo.id,
       clienteId: cliente.id,
@@ -432,16 +440,24 @@ async function main() {
       areaId: area.id,
       estado: Estados.PENDIENTE,
       descripcion: 'Reclamo creado por el cliente.',
-      fechaInicio: new Date(
-        Date.now() - (reclamosCreados.length - i) * 24 * 60 * 60 * 1000,
-      ), // Días atrás
+      fechaInicio: pendienteInicio,
+      fechaFin: pendienteFin,
     });
 
-    // Si el reclamo está en proceso o resuelto, agregar más cambios
+    // 🔵 EN_PROCESO
     if (
       reclamo.estado === Estados.EN_PROCESO ||
       reclamo.estado === Estados.RESUELTO
     ) {
+      const enProcesoInicio = new Date(
+        pendienteInicio.getTime() + 5 * 60 * 60 * 1000,
+      );
+
+      const enProcesoFin =
+        reclamo.estado === Estados.EN_PROCESO
+          ? null
+          : new Date(enProcesoInicio.getTime() + 6 * 60 * 60 * 1000);
+
       cambiosEstadoData.push({
         reclamoId: reclamo.id,
         clienteId: null,
@@ -449,20 +465,17 @@ async function main() {
         areaId: area.id,
         estado: Estados.EN_PROCESO,
         descripcion: 'Reclamo asignado a área y en proceso de resolución.',
-        fechaInicio: new Date(
-          Date.now() - (reclamosCreados.length - i) * 20 * 60 * 60 * 1000,
-        ),
-        fechaFin:
-          reclamo.estado === Estados.RESUELTO
-            ? new Date(
-                Date.now() - (reclamosCreados.length - i) * 12 * 60 * 60 * 1000,
-              )
-            : null,
+        fechaInicio: enProcesoInicio,
+        fechaFin: enProcesoFin,
       });
     }
 
-    // Si el reclamo está resuelto, agregar cambio final
+    // 🟢 RESUELTO (SIEMPRE es el último y NO tiene fechaFin)
     if (reclamo.estado === Estados.RESUELTO) {
+      const resueltoInicio = new Date(
+        pendienteInicio.getTime() + 12 * 60 * 60 * 1000,
+      );
+
       cambiosEstadoData.push({
         reclamoId: reclamo.id,
         clienteId: null,
@@ -470,12 +483,8 @@ async function main() {
         areaId: area.id,
         estado: Estados.RESUELTO,
         descripcion: 'Reclamo resuelto satisfactoriamente.',
-        fechaInicio: new Date(
-          Date.now() - (reclamosCreados.length - i) * 10 * 60 * 60 * 1000,
-        ),
-        fechaFin: new Date(
-          Date.now() - (reclamosCreados.length - i) * 2 * 60 * 60 * 1000,
-        ),
+        fechaInicio: resueltoInicio,
+        fechaFin: null,
       });
     }
   }
@@ -483,6 +492,7 @@ async function main() {
   const cambiosEstado = await prisma.cambioEstado.createMany({
     data: cambiosEstadoData,
   });
+
   console.log(`✅ Se crearon ${cambiosEstado.count} cambios de estado\n`);
 
   // Resumen final

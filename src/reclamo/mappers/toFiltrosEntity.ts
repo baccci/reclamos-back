@@ -7,5 +7,6 @@ export function toFiltrosReclamoData(dto: FindReclamoDto): FiltrosReclamoData {
     clienteId: dto.clienteId ?? undefined,
     fechaDesde: dto.fechaDesde ? new Date(dto.fechaDesde) : undefined,
     fechaHasta: dto.fechaHasta ? new Date(dto.fechaHasta) : undefined,
+    areaId: dto.areaId ?? undefined,
   };
 }

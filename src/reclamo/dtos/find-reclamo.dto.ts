@@ -22,4 +22,8 @@ export class FindReclamoDto {
   @IsOptional()
   @ReclamoFechaField('Fecha hasta para filtrar reclamos')
   fechaHasta?: string;
+
+  @IsOptional()
+  @ReclamoAreaField()
+  areaId?: string;
 }
