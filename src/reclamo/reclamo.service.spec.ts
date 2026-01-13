@@ -17,8 +17,8 @@ const mockReclamo = {
   id: 'rec-123',
   tipoReclamoId: 'tr-001',
   proyectoId: 'proy-001',
-  prioridad: 'ALTA',
-  criticidad: 'MEDIA',
+  prioridad: Medidas.ALTO,
+  criticidad: Medidas.MEDIO,
   descripcion: 'Test reclamo',
   estado: Estados.PENDIENTE,
   createdAt: new Date(),
@@ -44,8 +44,8 @@ const expectedReclamoDto = {
   id: 'rec-123',
   tipoReclamo: 'tr-001',
   proyecto: 'proy-001',
-  prioridad: Medidas.ALTA,
-  criticidad: Medidas.MEDIA,
+  prioridad: Medidas.ALTO,
+  criticidad: Medidas.MEDIO,
   descripcion: 'Test reclamo',
   estado: Estados.PENDIENTE,
 };
@@ -113,8 +113,8 @@ describe('ReclamoService', () => {
       const dto: CreateReclamoDto = {
         tipoReclamoId: 'tr-001',
         proyectoId: 'proy-001',
-        prioridad: Medidas.ALTA,
-        criticidad: Medidas.MEDIA,
+        prioridad: Medidas.ALTO,
+        criticidad: Medidas.MEDIO,
         areaId: 'area-001',
         descripcion: 'Test',
       };
