@@ -10,6 +10,7 @@ import {
   ReclamoProyectoField,
   ReclamoTipoField,
 } from '../swaggers/reclamo.dto.swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ReclamoDto {
   @ReclamoIdField()
@@ -17,6 +18,12 @@ export class ReclamoDto {
 
   @ReclamoTipoField()
   tipoReclamo: string;
+
+  @ApiProperty({ description: 'Nombre del proyecto' })
+  proyectoNombre?: string;
+
+  @ApiProperty({ description: 'Nombre del cliente' })
+  clienteNombre?: string;
 
   @ReclamoProyectoField()
   proyecto: string;

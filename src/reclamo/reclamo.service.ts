@@ -6,7 +6,11 @@ import {
   toReclamoCreateData,
   toReclamoUpdateData,
 } from './mappers/toReclamoEntity';
-import { toReclamoDto } from './mappers/toReclamoDto';
+import {
+  ReclamoWithRelations,
+  toReclamoDto,
+  toReclamoDtoExtended,
+} from './mappers/toReclamoDto';
 import { ReclamoValidator } from './validators/reclamo.validator';
 import { UpdateEstadoDto } from './dtos/update-estado.dto';
 import { ReasignarAreaDto } from './dtos/reasignar-area.dto';
@@ -48,7 +52,7 @@ export class ReclamoService {
 
   async findByCliente(clienteId: string): Promise<ReclamoDto[]> {
     const reclamos = await this.repository.findByCliente(clienteId);
-    return reclamos.map(toReclamoDto);
+    return reclamos.map(toReclamoDtoExtended);
   }
 
   async update(id: string, dto: UpdateReclamoDto, userId: string) {
@@ -136,7 +140,9 @@ export class ReclamoService {
         ultimoCambio?.areaId === areaId &&
         ultimoCambio.estado !== Estados.RESUELTO
       ) {
-        reclamosFiltrados.push(toReclamoDto(reclamo));
+        reclamosFiltrados.push(
+          toReclamoDtoExtended(reclamo as ReclamoWithRelations),
+        );
       }
     }
 

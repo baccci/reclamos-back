@@ -198,7 +198,15 @@ export class ReclamoRepository implements IReclamoRepository {
   }
 
   async findAll(): Promise<Reclamo[]> {
-    return prisma.reclamo.findMany();
+    return prisma.reclamo.findMany({
+      include: {
+        proyecto: {
+          include: {
+            cliente: true,
+          },
+        },
+      },
+    });
   }
 
   async findByFiltros(filtros: FiltrosReclamoData): Promise<number> {
