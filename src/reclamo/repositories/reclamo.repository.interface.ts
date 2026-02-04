@@ -20,6 +20,6 @@ export interface IReclamoRepository {
     areaId: string,
     estado?: Estados,
   ): Promise<{ createdAt: Date; updatedAt: Date }[]>;
-  countByArea(areaId: string, estado?: Estados): Promise<number>;
   countByFiltros(filtros: FiltrosReclamoData): Promise<number>;
+  countByArea(areaId: string, estado?: Estados): Promise<number>;
 }
