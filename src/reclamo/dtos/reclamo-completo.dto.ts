@@ -12,8 +12,6 @@ export class ReclamoCompletoDTO {
 
   estado: Estados;
 
-  areaId?: string;
-
   tipoReclamo: {
     id: string;
     nombre: string;

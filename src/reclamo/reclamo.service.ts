@@ -132,13 +132,13 @@ export class ReclamoService {
     return mapper.toReclamoDTO(reclamo);
   }
 
-  async findById(id: string): Promise<ReclamoDTO> {
+  async findById(id: string): Promise<ReclamoCompletoDTO> {
     // Trae el reclamo según el ID
     const reclamo = await this.repository.findById(id);
     if (!reclamo) throw new NotFoundException('Reclamo no encontrado');
 
     // Mapea la información traída de la BD a DTO
-    return mapper.toReclamoDTO(reclamo);
+    return mapper.toReclamoCompletoDTO(reclamo);
   }
 
   async findByCliente(clienteId: string): Promise<ReclamoCompletoDTO[]> {

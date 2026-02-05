@@ -71,12 +71,12 @@ export const ReclamoMapper = {
     id: string,
     dto: UpdateReclamoDTO,
     clienteId: string,
-    reclamo: ReclamoDTO,
+    reclamo: ReclamoCompletoDTO,
     cambioEstado: CambioEstadoDTO,
   ): ReclamoData {
     return {
       reclamoId: id,
-      tipoReclamoId: dto.tipoReclamoId ?? reclamo.tipoReclamo,
+      tipoReclamoId: dto.tipoReclamoId ?? reclamo.tipoReclamo.id,
       prioridad: dto.prioridad ?? reclamo.prioridad,
       criticidad: dto.criticidad ?? reclamo.criticidad,
       areaId: dto.areaId ?? cambioEstado.areaId,

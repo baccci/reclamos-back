@@ -12,7 +12,7 @@ export interface IReclamoRepository {
   update(data: ReclamoData): Promise<Reclamo>;
   changeEstado(data: CambioEstadoCreateData): Promise<Reclamo>;
   reassignArea(data: CambioEstadoCreateData): Promise<Reclamo>;
-  findById(id: string): Promise<Reclamo | null>;
+  findById(id: string): Promise<ReclamoCompleto | null>;
   findAll(): Promise<Reclamo[]>;
   findByCliente(clienteId: string): Promise<ReclamoCompleto[]>;
   findByArea(areaId: string): Promise<ReclamoCompleto[]>;

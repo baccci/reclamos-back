@@ -259,7 +259,7 @@ export class ReclamoRepository implements IReclamoRepository {
     });
   }
 
-  async findById(id: string): Promise<Reclamo | null> {
+  async findById(id: string): Promise<ReclamoCompleto | null> {
     // Selecciona el reclamo con el id proporcionado, incluyendo el historial de estados
     return await prisma.reclamo.findFirst({
       where: {
@@ -269,6 +269,24 @@ export class ReclamoRepository implements IReclamoRepository {
       // Incluye todos el historial de estados de ese reclamo
       include: {
         cambioEstado: true,
+        tipoReclamo: {
+          select: {
+            id: true,
+            nombre: true,
+          },
+        },
+        proyecto: {
+          select: {
+            id: true,
+            nombre: true,
+            cliente: {
+              select: {
+                id: true,
+                nombre: true,
+              },
+            },
+          },
+        },
       },
     });
   }

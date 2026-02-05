@@ -14,6 +14,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import {
   SwaggerCreate,
   SwaggerFindAll,
+  SwaggerFindById,
   SwaggerUpdate,
 } from '../common/decorators/swaggers/controller.swagger';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -85,6 +86,13 @@ export class ReclamoController {
   @Get()
   findByCliente(@CurrentUser() userId: string): Promise<ReclamoCompletoDTO[]> {
     return this.service.findByCliente(userId);
+  }
+
+  @SwaggerFindById('Reclamo', ReclamoCompletoDTO)
+  @Roles(Role.CLIENTE) // Ingreso permitido sólo para empleados
+  @Get('/:id')
+  findById(@Param('id', ObjectIdPipe) id: string): Promise<ReclamoCompletoDTO> {
+    return this.service.findById(id);
   }
 
   @SwaggerFindAll('Reclamos de un área', ReclamoCompletoDTO)
