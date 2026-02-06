@@ -1,10 +1,11 @@
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, HttpStatus } from '@nestjs/common';
+import { Estados } from '@prisma/client';
+import { Server } from 'http';
 import supertest from 'supertest';
 import { AppModule } from '../src/app.module';
-import { Server } from 'http';
+import { Medidas } from '../src/common/enums/medidas.enum';
 import prisma from '../src/lib/db';
-import { Estados } from '@prisma/client';
 import {
   createArea,
   createCliente,
@@ -13,7 +14,6 @@ import {
   createTipoProyecto,
   createTipoReclamo,
 } from './utils/factory';
-import { Medidas } from '../src/common/enums/medidas.enum';
 
 describe('Reclamo E2E - acciones principales', () => {
   let app: INestApplication;
@@ -167,8 +167,8 @@ describe('Reclamo E2E - acciones principales', () => {
       .expect(HttpStatus.OK);
 
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body.some((item: { id: string }) => item.id === reclamoId)).toBe(
-      true,
-    );
+    expect(
+      response.body.some((item: { id: string }) => item.id === reclamoId),
+    ).toBe(true);
   });
 });

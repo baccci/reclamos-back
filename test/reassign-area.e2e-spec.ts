@@ -1,13 +1,12 @@
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, HttpStatus } from '@nestjs/common';
-import supertest, { Response } from 'supertest';
-import { AppModule } from 'src/app.module';
-import prisma from 'src/lib/db';
 import { Estados } from '@prisma/client';
-import { Role } from 'src/common/enums/role.enum';
-import { signEmpleadoToken } from './utils/jwt';
-import { Medidas } from 'src/common/enums/medidas.enum';
 import { Server } from 'http';
+import { AppModule } from 'src/app.module';
+import { Medidas } from 'src/common/enums/medidas.enum';
+import { Role } from 'src/common/enums/role.enum';
+import prisma from 'src/lib/db';
+import supertest, { Response } from 'supertest';
 import {
   createArea,
   createCliente,
@@ -16,6 +15,7 @@ import {
   createTipoProyecto,
   createTipoReclamo,
 } from './utils/factory';
+import { signEmpleadoToken } from './utils/jwt';
 
 describe('Reclamo – Reassign Area (E2E)', () => {
   let app: INestApplication;
@@ -149,10 +149,10 @@ describe('Reclamo – Reassign Area (E2E)', () => {
   });
 
   it('el empleado ya no ve el reclamo en su área', async () => {
-    const response = await supertest(server)
+    const response = (await supertest(server)
       .get('/reclamo/area')
       .set('Authorization', `Bearer ${token}`)
-      .expect(HttpStatus.OK) as unknown as Response;
+      .expect(HttpStatus.OK)) as unknown as Response;
 
     expect(response.body).toEqual([]);
   });
