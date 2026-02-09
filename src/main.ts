@@ -9,16 +9,8 @@ async function bootstrap() {
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  const allowedOrigins = (process.env.ORIGIN_URL ?? '')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-
   app.enableCors({
-    origin:
-      allowedOrigins.length > 0
-        ? allowedOrigins
-        : 'https://pa-reclamos-front-git-codex-fix-7611a7-thomas-projects-1460765b.vercel.app',
+    origin: 'http://localhost:4000',
     methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true,
