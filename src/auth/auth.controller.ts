@@ -1,38 +1,38 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dtos/register.dto';
-import { LoginDto } from './dtos/login.dto';
+import { RegisterDTO } from './dtos/register.dto';
+import { LoginDTO } from './dtos/login.dto';
 import { ApiTags } from '@nestjs/swagger';
 import {
   SwaggerLogin,
   SwaggerRegisterCliente,
   SwaggerRegisterEmpleado,
 } from './swaggers/auth.swagger';
+import { Role } from '../common/enums/role.enum';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly service: AuthService) {}
 
   @SwaggerRegisterCliente()
   @Post('register-cliente')
-  registrarCliente(
-    @Body() registerDto: RegisterDto,
-  ): Promise<{ access_token: string }> {
-    return this.authService.registerCliente(registerDto);
+  registerCliente(@Body() dto: RegisterDTO): Promise<{ access_token: string }> {
+    return this.service.register(dto, Role.CLIENTE);
   }
 
   @SwaggerRegisterEmpleado()
   @Post('register-empleado')
-  registrarEmpleado(
-    @Body() registerDto: RegisterDto,
+  registerEmpleado(
+    @Body() dto: RegisterDTO,
   ): Promise<{ access_token: string }> {
-    return this.authService.registerEmpleado(registerDto);
+    return this.service.register(dto, Role.EMPLEADO);
   }
 
   @SwaggerLogin()
   @Post('login')
-  login(@Body() loginDto: LoginDto): Promise<{ access_token: string }> {
-    return this.authService.login(loginDto);
+  @HttpCode(HttpStatus.OK)
+  login(@Body() dto: LoginDTO): Promise<{ access_token: string }> {
+    return this.service.login(dto);
   }
 }

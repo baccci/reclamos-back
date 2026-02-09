@@ -1,21 +1,24 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import {
+  IsValidDescription,
+  IsValidName,
+} from '../../common/decorators/swaggers/dto.swagger';
 
-export class CreateAreaDto {
-  @ApiProperty({
-    example: 'Ventas',
-    description: 'Nombre del área',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
+export class CreateAreaDTO {
+  @IsValidName(
+    50, // Max carácteres
+    'Ventas', // Ejemplo
+    'Nombre del área', // Descripción
+  )
   nombre!: string;
-  @ApiProperty({
-    example: 'Área encargada de las ventas',
-    description: 'Descripción del área',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
+
+  @IsValidDescription(
+    100, // Max carácteres
+    false, // Requerido
+    'Área encargada de las ventas', // Ejemplo
+    'Descripción del área', // Descripción
+  )
   descripcion?: string;
 }
+
+export class UpdateAreaDTO extends PartialType(CreateAreaDTO) {}

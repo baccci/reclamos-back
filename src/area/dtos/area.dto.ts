@@ -1,30 +1,25 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsValidDescription,
+  IsValidId,
+  IsValidName,
+} from '../../common/decorators/swaggers/dto.swagger';
 
-export class AreaDto {
-  @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'ID del área',
-    required: true,
-  })
-  @IsString()
+export class AreaDTO {
+  @IsValidId('Área') // Nombre de la tabla
   id!: string;
 
-  @ApiProperty({
-    example: 'Ventas',
-    description: 'Nombre del área',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
+  @IsValidName(
+    50, // Max carácteres
+    'Ventas', // Ejemplo
+    'Nombre del área', // Descripción
+  )
   nombre!: string;
 
-  @ApiProperty({
-    example: 'Área encargada de las ventas',
-    description: 'Descripción del producto',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
+  @IsValidDescription(
+    100, // Max carácteres
+    false, // Requerido
+    'Área encargada de las ventas', // Ejemplo
+    'Descripción del área', // Descripción
+  )
   descripcion?: string;
 }

@@ -1,72 +1,124 @@
 import {
-  Controller,
-  Post,
   Body,
-  UseGuards,
-  Req,
-  Put,
-  Param,
+  Controller,
   Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Roles } from '../common/decorators/roles.decorator';
+import {
+  SwaggerCreate,
+  SwaggerFindAll,
+  SwaggerFindById,
+  SwaggerUpdate,
+} from '../common/decorators/swaggers/controller.swagger';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { Role } from '../common/enums/role.enum';
+import { JwtAuthGuard } from '../common/guards/jwt.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { ObjectIdPipe } from '../common/pipes/object-id.pipe';
+import { CreateReclamoDTO } from './dtos/create-reclamo.dto';
+import { FiltersDTO } from './dtos/filters.dto';
+import { ReasignarAreaDTO } from './dtos/reasignar-area.dto';
+import { ReclamoCompletoDTO } from './dtos/reclamo-completo.dto';
+import { ReclamoDTO } from './dtos/reclamo.dto';
+import { UpdateEstadoDTO } from './dtos/update-estado.dto';
+import { UpdateReclamoDTO } from './dtos/update-reclamo.dto';
 import { ReclamoService } from './reclamo.service';
-import { CreateReclamoDto } from './dtos/create-reclamo.dto';
-import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/enums/role.enum';
-import { UpdateEstadoDto } from './dtos/update-estado.dto';
-import { ReasignarAreaDto } from './dtos/reasignar-area.dto';
-import { UpdateReclamoDto } from './dtos/update-reclamo.dto';
+import { SwaggerCantProm, SwaggerTiemProm } from './swaggers/reclamo.swagger';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard) // Ingreso permitido sólo para usuarios autenticados
+@ApiTags('Reclamo')
 @Controller('reclamo')
 export class ReclamoController {
   constructor(private readonly service: ReclamoService) {}
 
-  @Roles(Role.CLIENTE)
+  @SwaggerCreate('Reclamo', CreateReclamoDTO, ReclamoDTO)
+  @Roles(Role.CLIENTE) // Ingreso permitido sólo para clientes
   @Post()
-  create(@Body() dto: CreateReclamoDto, @Req() req) {
-    const userId = req.user.id as string;
+  create(
+    @Body() dto: CreateReclamoDTO,
+    @CurrentUser() userId: string,
+  ): Promise<ReclamoDTO> {
     return this.service.create(dto, userId);
   }
 
+  @SwaggerUpdate('Estado de Reclamo', UpdateEstadoDTO, ReclamoDTO)
+  @Roles(Role.EMPLEADO) // Ingreso permitido sólo para empleados
+  @Put('/change-estado/:id')
+  changeEstado(
+    @Param('id', ObjectIdPipe) id: string,
+    @Body() dto: UpdateEstadoDTO,
+    @CurrentUser() userId: string,
+  ): Promise<ReclamoDTO> {
+    return this.service.changeEstado(id, dto, userId);
+  }
+
+  @SwaggerUpdate('Área de un reclamo', ReasignarAreaDTO, ReclamoDTO)
+  @Roles(Role.EMPLEADO) // Ingreso permitido sólo para empleados
+  @Put('/reassign-area/:id')
+  reassignArea(
+    @Param('id', ObjectIdPipe) id: string,
+    @Body() dto: ReasignarAreaDTO,
+    @CurrentUser() userId: string,
+  ): Promise<ReclamoDTO> {
+    return this.service.reassignArea(id, dto, userId);
+  }
+
+  @SwaggerUpdate('Datos del reclamo', UpdateReclamoDTO, ReclamoDTO)
+  @Roles(Role.CLIENTE) // Ingreso permitido sólo para clientes
+  @Patch('/:id')
+  update(
+    @Param('id', ObjectIdPipe) id: string, // Valida que el id sea valido con el pipe
+    @Body() dto: UpdateReclamoDTO,
+    @CurrentUser() userId: string,
+  ): Promise<ReclamoDTO> {
+    return this.service.update(id, dto, userId);
+  }
+
+  @SwaggerFindAll('Reclamos de cliente', ReclamoCompletoDTO)
   @Roles(Role.CLIENTE)
   @Get()
-  findByCliente(@Req() req) {
-    const userId = req.user.id as string;
+  findByCliente(@CurrentUser() userId: string): Promise<ReclamoCompletoDTO[]> {
     return this.service.findByCliente(userId);
   }
 
+  @SwaggerFindAll('Reclamos de un área', ReclamoCompletoDTO)
   @Roles(Role.EMPLEADO)
-  @Put('/update-estado/:id')
-  updateEstado(
-    @Param('id') id: string,
-    @Body() dto: UpdateEstadoDto,
-    @Req() req,
-  ) {
-    const userId = req.user.id as string;
-    return this.service.updateEstado(id, dto, userId);
+  @Get('area')
+  findByArea(@CurrentUser() userId: string): Promise<ReclamoCompletoDTO[]> {
+    return this.service.findByArea(userId);
   }
 
-  @Roles(Role.EMPLEADO)
-  @Put('/reassign-area/:id')
-  reassignArea(
-    @Param('id') reclamoId: string,
-    @Body() dto: ReasignarAreaDto,
-    @Req() req,
-  ) {
-    const userId = req.user.id as string;
-    return this.service.reassignArea(reclamoId, dto, userId);
+  @SwaggerFindById('Reclamo', ReclamoCompletoDTO)
+  @Get('/:id')
+  findById(@Param('id', ObjectIdPipe) id: string): Promise<ReclamoCompletoDTO> {
+    return this.service.findById(id);
   }
 
-  @Roles(Role.CLIENTE)
-  @Put('/:id')
-  update(
-    @Param('id') reclamoId: string,
-    @Body() dto: UpdateReclamoDto,
-    @Req() req,
-  ) {
-    const userId = req.user.id as string;
-    return this.service.update(reclamoId, dto, userId);
+  @SwaggerFindAll('Reclamos con filtros', ReclamoDTO)
+  @Roles(Role.EMPLEADO) // Ingreso permitido sólo para empleados
+  @Get('filtros')
+  countByFiltros(@Query() dto: FiltersDTO): Promise<number> {
+    return this.service.countByFiltros(dto);
+  }
+
+  @SwaggerTiemProm()
+  @Roles(Role.EMPLEADO) // Ingreso permitido sólo para empleados
+  @Get('tiempo-promedio-resolucion')
+  getTiemProm(@Query('areaId', ObjectIdPipe) areaId: string): Promise<number> {
+    return this.service.getTiemProm(areaId);
+  }
+
+  @SwaggerCantProm()
+  @Roles(Role.EMPLEADO) // Ingreso permitido sólo para empleados
+  @Get('cantidad-promedio-resolucion')
+  getCantProm(@Query('areaId', ObjectIdPipe) areaId: string): Promise<number> {
+    return this.service.getCantProm(areaId);
   }
 }

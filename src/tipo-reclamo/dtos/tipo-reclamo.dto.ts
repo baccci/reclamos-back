@@ -1,30 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsValidDescription,
+  IsValidId,
+  IsValidName,
+} from '../../common/decorators/swaggers/dto.swagger';
 
-export class TipoReclamoDto {
-  @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'ID del tipo de reclamo',
-    required: true,
-  })
-  @IsString()
+export class TipoReclamoDTO {
+  @IsValidId('Tipo de reclamo') // Nombre de la tabla
   id!: string;
 
-  @ApiProperty({
-    example: 'Queja',
-    description: 'Nombre del tipo de reclamo',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
+  @IsValidName(40, 'Nombre del tipo de reclamo', 'Nombre del tipo de reclamo') // Máx carácteres, Ejemplo, Descripción
   nombre!: string;
 
-  @ApiProperty({
-    example: 'Tipo de reclamo relacionado con el servicio al cliente',
-    description: 'Descripción del tipo de reclamo',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
+  @IsValidDescription(
+    100, // Máx carácteres
+    false, // Requerido o no
+    'Descripción', // Ejemplo
+    'Descripción del tipo de reclamo', // Descripción
+  )
   descripcion?: string;
 }

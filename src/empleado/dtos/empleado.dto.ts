@@ -1,34 +1,23 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { AreaDto } from '../../area/dtos/area.dto';
+import {
+  IsValidEmail,
+  IsValidId,
+  IsValidName,
+  IsValidTelephone,
+} from '../../common/decorators/swaggers/dto.swagger';
 
-export class EmpleadoDto {
-  @ApiProperty({
-    example: 'd92a44c1-58f4-4ae5-bc67-2fa10c5e1e3f',
-    description: 'Identificador único del empleado',
-  })
+export class EmpleadoDTO {
+  @IsValidId('Empleado') // Nombre de la tabla
   id: string;
 
-  @ApiProperty({
-    example: 'empleado@example.com',
-    description: 'Correo del empleado',
-  })
+  @IsValidEmail()
   email: string;
 
-  @ApiProperty({
-    example: '1122334455',
-    description: 'Número de teléfono del empleado',
-  })
+  @IsValidTelephone()
   telefono: string;
 
-  @ApiProperty({
-    example: 'Juan Pérez',
-    description: 'Nombre del empleado',
-  })
+  @IsValidName(50, 'Juan Pérez', 'Nombre del empleado') // Máx carácteres, Ejemplo, Descripción
   nombre: string;
 
-  @ApiProperty({
-    example: 'Facturación',
-    description: 'Área asignada al empleado',
-  })
-  area: AreaDto | null;
+  @IsValidId('Empleado', false) // Nombre de la tabla y si es requerido o no
+  area: string;
 }

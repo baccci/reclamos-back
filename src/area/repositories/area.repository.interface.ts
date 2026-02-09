@@ -1,12 +1,11 @@
-import { CreateAreaDto } from '../dtos/create-area.dto';
-import { UpdateAreaDto } from '../dtos/update-area.dto';
 import { Area } from '@prisma/client';
+import { areaCreateData, areaUpdateData } from '../interfaces/area.interface';
 
 export interface IAreaRepository {
-  create(data: CreateAreaDto): Promise<Area>;
-  update(nombre: string, data: UpdateAreaDto): Promise<Area>;
+  create(data: areaCreateData): Promise<Area>;
+  update(data: areaUpdateData): Promise<Area>;
   findAll(): Promise<Area[]>;
-  findById(nombre: string): Promise<Area>;
-  findByName(nombre: string): Promise<Area>;
-  softDelete(nombre: string): Promise<boolean>;
+  findById(id: string): Promise<Area | null>;
+  findByName(name: string): Promise<Area | null>;
+  delete(id: string): Promise<Area>;
 }

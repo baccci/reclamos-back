@@ -1,22 +1,31 @@
-import { IsString, IsEnum } from 'class-validator';
-import { Medidas } from 'src/common/enums/medidas.enum';
+import {
+  IsValidDescription,
+  IsValidEnum,
+  IsValidId,
+} from '../../common/decorators/swaggers/dto.swagger';
+import { Medidas } from '../../common/enums/medidas.enum';
 
-export class CreateReclamoDto {
-  @IsString()
+export class CreateReclamoDTO {
+  @IsValidId('Tipo de reclamo') // Nombre de la tabla
   tipoReclamoId: string;
 
-  @IsString()
-  descripcion: string;
+  @IsValidId('Proyecto')
+  proyectoId: string;
 
-  @IsEnum(Medidas)
-  prioridad: Medidas;
-
-  @IsEnum(Medidas)
-  criticidad: Medidas;
-
-  @IsString()
+  @IsValidId('Área')
   areaId: string;
 
-  @IsString()
-  proyectoId: string;
+  @IsValidDescription(
+    80, // Máx caracteres
+    true, // Requerido?
+    'Falla en el sistema', // Ejemplo
+    'Descripción del reclamo', // Descripción
+  )
+  descripcion: string;
+
+  @IsValidEnum('Prioridad', Medidas) // Nombre del enum y posibles valores
+  prioridad: Medidas;
+
+  @IsValidEnum('Criticidad', Medidas)
+  criticidad: Medidas;
 }
